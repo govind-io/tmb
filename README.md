@@ -7,7 +7,7 @@
 You can install `tmb` as a dev dependency:
 
 ```bash
-npm install tmb --save-dev
+npm install @govindgovind852/tmb --save-dev
 ```
 
 ## Usage
@@ -15,13 +15,15 @@ npm install tmb --save-dev
 After installation, you can use the CLI tool by running:
 
 ```bash
-npx tmb [yaml-file-path]
+npx @govindgovind852/tmb add-module [yaml-file-path]
 ```
 
 or
 
+add this in your package script
+
 ```bash
-tmb [yaml-file-path]
+"tmb": "tmb add-module [yaml-file-path]"
 ```
 
 If no file path is provided, the default `./mgrc.yaml` will be used.
