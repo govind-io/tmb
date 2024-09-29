@@ -1,6 +1,6 @@
 {
   "name": "tmb",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "A tool to define templates and generate modules using YAML configurations.",
   "main": "dist/index.js",
   "bin": {
