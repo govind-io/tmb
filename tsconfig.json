@@ -102,6 +102,7 @@
   "exclude": [
     "node_modules", // Exclude node_modules by default
     "dist", // Exclude the dist folder
-    "template-module" // Exclude the template-module folder
+    "template-module", // Exclude the template-module folder
+    "src/modules" // Exclude the src/modules folder
   ]
 }
