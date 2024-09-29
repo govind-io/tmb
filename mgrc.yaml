@@ -37,7 +37,7 @@ folders:
           - name: $moduleName-server.ts
             filePath: "rest-api/server-template.ts"
       - files:
-          - name: $moduleName-service.ts
+          - name: service.ts
             filePath: "service-template.ts"
           - name: index.ts
             filePath: "index-template.ts"

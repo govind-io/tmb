@@ -1,4 +1,4 @@
-import $entityNameReader from "./internal/$moduleName-reader";
+import $entityNameReader from "./internals/$moduleName-reader";
 
 import { $entityName } from "./types";
 
