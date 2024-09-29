@@ -1,0 +1,37 @@
+{
+  "name": "tmb",
+  "version": "1.0.0",
+  "description": "A tool to define templates and generate modules using YAML configurations.",
+  "main": "dist/index.js", 
+  "bin": {
+    "tmb": "dist/index.js" 
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "generate-module": "node dist/index.js"
+  },
+  "dependencies": {
+    "yaml": "^2.0.0",
+    "inquirer": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.0",
+    "ts-node": "^10.0.0",
+    "@types/node": "^16.0.0",
+    "@types/inquirer": "^8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/govind-io/tmb.git" 
+  },
+  "keywords": [
+    "yaml",
+    "template",
+    "module",
+    "generator",
+    "scaffolding"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
