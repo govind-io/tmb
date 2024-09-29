@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as fs from "fs";
 import * as path from "path";
 import { parse } from "yaml";
@@ -44,7 +45,7 @@ function loadContent(file: FileConfig, templatesDir?: string): string {
   if (file.filePath) {
     const fullPath = templatesDir
       ? path.join(templatesDir, file.filePath)
-      : file.filePath;
+      : path.resolve(process.cwd(), file.filePath); // Use process.cwd() to resolve the path
     try {
       const fileContent = fs.readFileSync(fullPath, "utf8");
       return fileContent;
@@ -113,8 +114,21 @@ function createFoldersAndFiles(
 
 // Main function to run the module generator
 async function generateModule(): Promise<void> {
-  // Check if YAML file path is provided, otherwise use default './mgrc.yaml'
-  const yamlFilePath = process.argv[2] || "./mgrc.yaml";
+  // Check if command like `add-module` or YAML file path is provided
+  const commandOrFilePath = process.argv[2] || "./mgrc.yaml";
+  let yamlFilePath: string;
+
+  // If the command is `add-module`, default to ./mgrc.yaml, otherwise treat it as a file path
+  if (commandOrFilePath === "add-module") {
+    const customYamlFilePath = process.argv[3];
+
+    yamlFilePath = path.resolve(
+      process.cwd(),
+      customYamlFilePath || "./mgrc.yaml"
+    );
+  } else {
+    yamlFilePath = path.resolve(process.cwd(), commandOrFilePath);
+  }
 
   // Read and parse YAML file
   let template: Template;
@@ -127,8 +141,13 @@ async function generateModule(): Promise<void> {
   }
 
   // Extract configs
-  const rootDir = template.configs?.rootDir || process.cwd();
-  const templatesDir = template.configs?.templatesDir;
+  const rootDir = path.resolve(
+    process.cwd(),
+    template.configs?.rootDir || process.cwd()
+  );
+  const templatesDir = template.configs?.templatesDir
+    ? path.resolve(process.cwd(), template.configs.templatesDir)
+    : undefined;
   const defaultValues = template.configs?.defaults || {};
 
   // Collect variable values from the user, using defaults when available

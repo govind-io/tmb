@@ -1,4 +1,3 @@
-
 # tmb - Template Module Builder
 
 `tmb` is a powerful CLI tool that allows you to define template modules and generate them using YAML configuration files. It's ideal for projects where you need consistent module generation based on pre-defined templates.
@@ -17,6 +16,12 @@ After installation, you can use the CLI tool by running:
 
 ```bash
 npx tmb [yaml-file-path]
+```
+
+or
+
+```bash
+tmb [yaml-file-path]
 ```
 
 If no file path is provided, the default `./mgrc.yaml` will be used.
@@ -71,21 +76,27 @@ folders:
 ### Configuration Options
 
 #### `configs`
+
 - **rootDir**: Specifies where the generated modules will be created. Defaults to the current directory if not specified.
 - **templatesDir**: Specifies the folder where your template files are stored. If not provided, you can specify inline content or use absolute paths for templates.
 - **defaults**: You can specify default values for variables like `moduleName`.
 
 #### `variables`
+
 A list of variables that will be replaced in folder and file names, and within file contents. The user is prompted to provide these unless defaults are given.
 
 #### `folders`
+
 Defines the folder structure for the module. It contains:
+
 - **name**: The folder name (can include variables like `$moduleName`).
 - **folders**: Subfolders inside the folder.
 - **files**: Files inside the folder.
 
 #### `files`
+
 Each folder can have multiple files. Files can specify:
+
 - **name**: The file name, which can contain variables like `$moduleName`.
 - **filePath**: Path to an external template file.
 - **content**: Inline content directly provided in the YAML file.
