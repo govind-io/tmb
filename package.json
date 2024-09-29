@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/index.ts",
-    "generate-module": "node dist/index.js"
+    "add-module": "node dist/index.js"
   },
   "dependencies": {
     "yaml": "^2.0.0",
