@@ -1,6 +1,6 @@
 {
   "name": "@govindgovind852/tmb",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A tool to define templates and generate modules using YAML configurations.",
   "main": "dist/index.js",
   "bin": {
