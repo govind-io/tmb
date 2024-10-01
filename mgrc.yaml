@@ -2,23 +2,26 @@ configs:
   rootDir: "./src/modules"
   templatesDir: "./template-module"
   defaults:
-    moduleName: test
-    entityName: Test
-    pageLimit: 10
-    dbTypeDef: ./template-module/dbTypeDef.ts
-    entityTypeDef: ./template-module/entityTypeDef.ts
-    dbSchema: ./template-module/dbSchema.ts
+    filepaths:
+      dbTypeDef: "dbTypeDef.ts"
+      entityTypeDef: "entityTypeDef.ts"
+      dbSchema: "dbSchema.ts"
+    value:
+      moduleName: "test"
+      entityName: "Test"
+      pageLimit: "10"
 
 variables:
-  - moduleName
-  - entityName
-  - pageLimit
-  - dbTypeDef
-  - entityTypeDef
-  - dbSchema
-
+  filepaths:
+    - dbTypeDef
+    - entityTypeDef
+    - dbSchema
+  value:
+    - moduleName
+    - entityName
+    - pageLimit
 folders:
-  - name: $moduleName-module
+  - name: $moduleName
     folders:
       - name: internals
         folders:

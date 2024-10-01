@@ -1,3 +1,4 @@
+
 # tmb - Template Module Builder
 
 `tmb` is a powerful CLI tool that allows you to define template modules and generate them using YAML configuration files. It's ideal for projects where you need consistent module generation based on pre-defined templates.
@@ -37,11 +38,25 @@ configs:
   rootDir: "./src/modules"
   templatesDir: "./template-module"
   defaults:
-    moduleName: test
+    filepaths:
+      dbTypeDef: "dbTypeDef.ts"
+      entityTypeDef: "entityTypeDef.ts"
+      dbSchema: "dbSchema.ts"
+    value:
+      moduleName: "test"
+      entityName: "Test"
+      pageLimit: "10"
 variables:
-  - moduleName
+  filepaths:
+    - dbTypeDef
+    - entityTypeDef
+    - dbSchema
+  value:
+    - moduleName
+    - entityName
+    - pageLimit
 folders:
-  - name: $moduleName-module
+  - name: $moduleName
     folders:
       - name: internals
         folders:
@@ -56,18 +71,20 @@ folders:
             filePath: "internal/writer-template.ts"
           - name: $moduleName-reader.ts
             filePath: "internal/reader-template.ts"
+          - name: $moduleName-util.ts
+            filePath: "internal/util-template.ts"
       - name: rest-api
         files:
           - name: $moduleName-controller.ts
             filePath: "rest-api/controller-template.ts"
           - name: $moduleName-router.ts
             filePath: "rest-api/router-template.ts"
-          - name: $moduleName-serialiser.ts
-            filePath: "rest-api/serialiser-template.ts"
+          - name: $moduleName-serializer.ts
+            filePath: "rest-api/serializer-template.ts"
           - name: $moduleName-server.ts
             filePath: "rest-api/server-template.ts"
       - files:
-          - name: $moduleName-module-service.ts
+          - name: service.ts
             filePath: "service-template.ts"
           - name: index.ts
             filePath: "index-template.ts"

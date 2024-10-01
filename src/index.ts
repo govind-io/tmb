@@ -20,12 +20,18 @@ interface FolderConfig {
 interface Configs {
   rootDir?: string;
   templatesDir?: string;
-  defaults?: { [key: string]: string };
+  defaults?: {
+    filepaths?: { [key: string]: string };
+    value?: { [key: string]: string };
+  };
 }
 
 interface Template {
   configs?: Configs;
-  variables: string[];
+  variables: {
+    filepaths?: string[];
+    value?: string[];
+  };
   folders: FolderConfig[];
 }
 
@@ -112,19 +118,29 @@ function createFoldersAndFiles(
   }
 }
 
-// Function to load content from a file if the variable represents a file path
-function loadVariableContent(variableValue: string): string {
-  try {
-    const resolvedPath = path.resolve(process.cwd(), `${variableValue}`);
+// Function to load file content for variables under 'filepaths', with templatesDir support
+async function loadFilePathVariable(
+  variable: string,
+  templatesDir?: string,
+  defaultPath?: string
+): Promise<string> {
+  // Prompt the user for file path, use defaultPath as the suggested default
+  const answers = await prompt({
+    type: "input",
+    name: "filePath",
+    message: `Please provide a file path for ${variable}:`,
+    default: defaultPath, // Provide the default path as a suggestion
+  });
 
-    if (fs.existsSync(resolvedPath)) {
-      return fs.readFileSync(resolvedPath, "utf8");
-    }
-    return variableValue;
-  } catch (error) {
-    console.error(`Error reading content from file path: ${variableValue}`);
-    process.exit(1);
+  const resolvedPath = templatesDir
+    ? path.resolve(templatesDir, answers.filePath)
+    : path.resolve(process.cwd(), answers.filePath);
+
+  if (fs.existsSync(resolvedPath)) {
+    return fs.readFileSync(resolvedPath, "utf8");
   }
+  console.error(`File not found at path: ${resolvedPath}`);
+  process.exit(1);
 }
 
 // Main function to run the module generator
@@ -163,25 +179,36 @@ async function generateModule(): Promise<void> {
   const templatesDir = template.configs?.templatesDir
     ? path.resolve(process.cwd(), template.configs.templatesDir)
     : undefined;
-  const defaultValues = template.configs?.defaults || {};
+  const filepathsDefaults = template.configs?.defaults?.filepaths || {};
+  const valueDefaults = template.configs?.defaults?.value || {};
 
-  // Collect variable values from the user, using defaults when available
-  const variablePrompts = template.variables.map((variable) => ({
+  // Collect variable values from the user, handling both 'filepaths' and 'value' sections
+  const filePathVariables = template.variables.filepaths || [];
+  const valueVariables = template.variables.value || [];
+
+  // For 'filepaths', prompt the user for a file path, even if a default is provided
+  const filePathVariableValues: { [key: string]: string } = {};
+  for (const filePathVar of filePathVariables) {
+    const fileContent = await loadFilePathVariable(
+      filePathVar,
+      templatesDir,
+      filepathsDefaults[filePathVar]
+    );
+    filePathVariableValues[filePathVar] = fileContent;
+  }
+
+  // For 'value' variables, prompt the user to provide values or use defaults
+  const valuePrompts = valueVariables.map((variable) => ({
     type: "input",
     name: variable,
     message: `Please provide a value for ${variable}:`,
-    default: defaultValues[variable], // Use the default value if available
+    default: valueDefaults[variable], // Use the default value if available
   }));
 
-  let variables = await prompt(variablePrompts);
+  const valueVariableValues = await prompt(valuePrompts);
 
-  // Process variable values, loading content from file paths if applicable
-  variables = Object.fromEntries(
-    Object.entries(variables).map(([key, value]) => [
-      key,
-      loadVariableContent(value as string),
-    ])
-  );
+  // Combine both file path and value-based variables
+  const variables = { ...filePathVariableValues, ...valueVariableValues };
 
   // Create folders and files based on the template and provided variables
   template.folders.forEach((folder) => {
