@@ -5,10 +5,17 @@ configs:
     moduleName: test
     entityName: Test
     pageLimit: 10
+    dbTypeDef: ./template-module/dbTypeDef.ts
+    entityTypeDef: ./template-module/entityTypeDef.ts
+    dbSchema: ./template-module/dbSchema.ts
+
 variables:
   - moduleName
   - entityName
   - pageLimit
+  - dbTypeDef
+  - entityTypeDef
+  - dbSchema
 
 folders:
   - name: $moduleName-module
@@ -26,6 +33,8 @@ folders:
             filePath: "internal/writer-template.ts"
           - name: $moduleName-reader.ts
             filePath: "internal/reader-template.ts"
+          - name: $moduleName-util.ts
+            filePath: "internal/util-template.ts"
       - name: rest-api
         files:
           - name: $moduleName-controller.ts

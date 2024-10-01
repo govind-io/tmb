@@ -45,7 +45,7 @@ function loadContent(file: FileConfig, templatesDir?: string): string {
   if (file.filePath) {
     const fullPath = templatesDir
       ? path.join(templatesDir, file.filePath)
-      : path.resolve(process.cwd(), file.filePath); // Use process.cwd() to resolve the path
+      : path.resolve(process.cwd(), file.filePath);
     try {
       const fileContent = fs.readFileSync(fullPath, "utf8");
       return fileContent;
@@ -112,6 +112,21 @@ function createFoldersAndFiles(
   }
 }
 
+// Function to load content from a file if the variable represents a file path
+function loadVariableContent(variableValue: string): string {
+  try {
+    const resolvedPath = path.resolve(process.cwd(), `${variableValue}`);
+
+    if (fs.existsSync(resolvedPath)) {
+      return fs.readFileSync(resolvedPath, "utf8");
+    }
+    return variableValue;
+  } catch (error) {
+    console.error(`Error reading content from file path: ${variableValue}`);
+    process.exit(1);
+  }
+}
+
 // Main function to run the module generator
 async function generateModule(): Promise<void> {
   // Check if command like `add-module` or YAML file path is provided
@@ -158,7 +173,15 @@ async function generateModule(): Promise<void> {
     default: defaultValues[variable], // Use the default value if available
   }));
 
-  const variables = await prompt(variablePrompts);
+  let variables = await prompt(variablePrompts);
+
+  // Process variable values, loading content from file paths if applicable
+  variables = Object.fromEntries(
+    Object.entries(variables).map(([key, value]) => [
+      key,
+      loadVariableContent(value as string),
+    ])
+  );
 
   // Create folders and files based on the template and provided variables
   template.folders.forEach((folder) => {
