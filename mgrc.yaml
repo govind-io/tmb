@@ -2,16 +2,26 @@ configs:
   rootDir: "./src/modules"
   templatesDir: "./template-module"
   defaults:
-    moduleName: test
-    entityName: Test
-    pageLimit: 10
-variables:
-  - moduleName
-  - entityName
-  - pageLimit
+    filepaths:
+      dbTypeDef: "dbTypeDef.ts"
+      entityTypeDef: "entityTypeDef.ts"
+      dbSchema: "dbSchema.ts"
+    value:
+      moduleName: "test"
+      entityName: "Test"
+      pageLimit: "10"
 
+variables:
+  filepaths:
+    - dbTypeDef
+    - entityTypeDef
+    - dbSchema
+  value:
+    - moduleName
+    - entityName
+    - pageLimit
 folders:
-  - name: $moduleName-module
+  - name: $moduleName
     folders:
       - name: internals
         folders:
@@ -26,6 +36,8 @@ folders:
             filePath: "internal/writer-template.ts"
           - name: $moduleName-reader.ts
             filePath: "internal/reader-template.ts"
+          - name: $moduleName-util.ts
+            filePath: "internal/util-template.ts"
       - name: rest-api
         files:
           - name: $moduleName-controller.ts
